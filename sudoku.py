@@ -2,14 +2,15 @@ import math
 from itertools import product
 from copy import copy
 
+
 class SudokuBoard():
     """ Class for a 9x9 sudoku board"""
 
     def __init__(self, board=None):
-        """ If board is None an empty board is initialized, else an 
+        """ If board is None an empty board is initialized, else an
             initial board can be given as a single space separated
             strings of numbers.
-            
+
             Example:    0 0 0 0 0 0 0 0 0
                         0 0 8 0 0 0 0 4 0
                         0 0 0 0 0 0 0 0 0
@@ -20,24 +21,23 @@ class SudokuBoard():
                         0 0 0 0 0 0 2 0 0
                         0 0 0 0 0 0 0 0 0
         """
-        
+
         self._board = {}
 
         if board and isinstance(board, str):
             for x, line in enumerate(board.split('\n')):
                 for y, value in enumerate(line.split(' ')):
-                    try: 
+                    try:
                         value = int(value)
                     except ValueError:
                         continue
-                    
+
                     if value:
-                        #print x, y, value
+                        # print x, y, value
                         self.set_cell((x + 1, y + 1), value)
-        
+
         if board and isinstance(board, dict):
             self._board = board
-                
 
     def set_cell(self, position, value):
         """ Sets the value for a given position in
@@ -45,15 +45,15 @@ class SudokuBoard():
         x, y = position
 
         if x < 1 or x > 9:
-            raise ValueError('Position out of range. x: %d y: %d value: %d' 
-                                                          % (value, x, y))
+            raise ValueError('Position out of range. x: %d y: %d value: %d'
+                             % (value, x, y))
         if y < 1 or y > 9:
-            raise ValueError('Position out of range. x: %d y: %d value: %d' 
-                                                          % (value, x, y))
+            raise ValueError('Position out of range. x: %d y: %d value: %d'
+                             % (value, x, y))
         if value < 1 or value > 9:
-            raise ValueError('Position out of range. x: %d y: %d value: %d' 
-                                                          % (value, x, y))
-            
+            raise ValueError('Position out of range. x: %d y: %d value: %d'
+                             % (value, x, y))
+
         self._board[position] = value
 
     def erase_cell(self, position):
@@ -63,21 +63,20 @@ class SudokuBoard():
         """ Returns True if there are no repeated values,
             False if there are repeated values """
         l = [self._board[(x, y)] for x, y in self._board if x == row]
-        return len(l) == len(set(l)) 
+        return len(l) == len(set(l))
 
     def check_col(self, col):
         """ Returns True if there are no repeated values,
             False if there are repeated values """
         l = [self._board[(x, y)] for x, y in self._board if y == col]
-        return len(l) == len(set(l)) 
+        return len(l) == len(set(l))
 
-    def check_region(self, region): 
+    def check_region(self, region):
         positions = self.get_positions(region)
         positions = [pos for pos in positions if pos in self._board]
         l = [self._board[pos] for pos in positions]
 
         return len(l) == len(set(l))
-            
 
     def check_board(self):
         for i in range(1, 10):
@@ -102,13 +101,13 @@ class SudokuBoard():
     @classmethod
     def get_region(cls, pos):
         x, y = pos
-        
+
         if x <= 3:
-            region = math.ceil(y /3.0)
+            region = math.ceil(y / 3.0)
         elif x <= 6:
-            region = math.ceil(y /3.0) + 3
+            region = math.ceil(y / 3.0) + 3
         elif x <= 9:
-            region = math.ceil(y /3.0) + 6
+            region = math.ceil(y / 3.0) + 6
 
         return region
 
@@ -127,7 +126,7 @@ class SudokuBoard():
             cols = (4, 5, 6)
         elif region in (3, 6, 9):
             cols = (7, 8, 9)
-        
+
         return product(rows, cols)
 
     def __repr__(self):
@@ -142,7 +141,7 @@ class SudokuBoard():
 
 if __name__ == '__main__':
     sudoku = SudokuBoard()
-   
+
     # Test set cell
     try:
         sudoku.set_cell((10, 5), 1)
@@ -153,15 +152,15 @@ if __name__ == '__main__':
         sudoku.set_cell((1, 10), 1)
     except ValueError:
         print 'Col out of range test: passed'
-    
+
     try:
         sudoku.set_cell((1, 1), 10)
     except ValueError:
         print 'Value out of range test: passed'
 
-    # Test Row 
-    sudoku.set_cell((1,1), 2)
-    sudoku.set_cell((1,2), 2)
+    # Test Row
+    sudoku.set_cell((1, 1), 2)
+    sudoku.set_cell((1, 2), 2)
     assert sudoku.check_row(1) == False
 
     # Test Col
