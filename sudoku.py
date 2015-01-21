@@ -35,9 +35,13 @@ class SudokuBoard():
                     if value:
                         # print x, y, value
                         self.set_cell((x + 1, y + 1), value)
-
-        if board and isinstance(board, dict):
+        elif board and isinstance(board, dict):
             self._board = board
+        elif board and isinstance(board, list):
+            for i, row in enumerate(board):
+                for j, value in enumerate(row):
+                    if value:
+                        self.set_cell((i + 1, j + 1), value)
 
     def set_cell(self, position, value):
         """ Sets the value for a given position in
@@ -46,13 +50,13 @@ class SudokuBoard():
 
         if x < 1 or x > 9:
             raise ValueError('Position out of range. x: %d y: %d value: %d'
-                             % (value, x, y))
+                             % (x, y, value))
         if y < 1 or y > 9:
             raise ValueError('Position out of range. x: %d y: %d value: %d'
-                             % (value, x, y))
+                             % (x, y, value))
         if value < 1 or value > 9:
             raise ValueError('Position out of range. x: %d y: %d value: %d'
-                             % (value, x, y))
+                             % (x, y, value))
 
         self._board[position] = value
 
@@ -81,14 +85,14 @@ class SudokuBoard():
     def check_board(self):
         for i in range(1, 10):
             if not self.check_row(i):
-                return false
+                return False
 
             if not self.check_col(i):
-                return false
+                return False
 
         for i in range(1, 10):
             if not self.check_region(i):
-                return false
+                return False
 
         return True
 
@@ -161,12 +165,12 @@ if __name__ == '__main__':
     # Test Row
     sudoku.set_cell((1, 1), 2)
     sudoku.set_cell((1, 2), 2)
-    assert sudoku.check_row(1) == False
+    assert sudoku.check_row(1) is False
 
     # Test Col
     sudoku.set_cell((1, 9), 7)
     sudoku.set_cell((2, 9), 7)
-    assert sudoku.check_col(9) == False
+    assert sudoku.check_col(9) is False
 
     # Test board string input
     board = ("0 0 8 0 0 0 0 0 0\n"
@@ -181,8 +185,8 @@ if __name__ == '__main__':
 
     sudoku2 = SudokuBoard(board=board)
     sudoku3 = SudokuBoard(board=repr(sudoku2))
-    assert sudoku2.check_region(1) == False
-    assert sudoku2.check_region(7) == True
+    assert sudoku2.check_region(1) is False
+    assert sudoku2.check_region(7) is True
     assert repr(sudoku2) == repr(sudoku3)
 
     # is_complete test
@@ -196,4 +200,4 @@ if __name__ == '__main__':
               "5 6 7 8 9 1 2 3 4\n"
               "8 9 1 2 3 4 5 6 7\n")
     sudoku4 = SudokuBoard(board=board2)
-    assert sudoku4.is_complete() == True
+    assert sudoku4.is_complete() is True
